@@ -5,14 +5,473 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riri - Advanced Discord Bot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        /* ============================= */
+        /* CUSTOMIZE COLORS HERE */
+        /* ============================= */
+        :root {
+            --primary: #7289DA;          /* Discord blurple */
+            --secondary: #5865F2;        /* Discord blurple darker */
+            --dark: #1a1a1a;             /* Very dark gray - MAIN BACKGROUND */
+            --darker: #0f0f0f;           /* Almost black for darker sections */
+            --light: #FFFFFF;            /* White text */
+            --accent: #FF73B3;           /* Pink accent */
+            --text-gray: #b0b0b0;        /* Gray text */
+            --card-bg: #2a2a2a;          /* Card background */
+            --gradient: linear-gradient(135deg, #7289DA 0%, #5865F2 100%);
+            --gradient-accent: linear-gradient(135deg, #FF73B3 0%, #7289DA 100%);
+        }
+
+        /* ============================= */
+        /* BASE STYLES - DON'T CHANGE */
+        /* ============================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: rgba(255, 115, 179, 0.1);
+        }
+
+        .cta-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(114, 137, 218, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 12rem 5% 8rem;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(114, 137, 218, 0.1), transparent 50%);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .bot-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .features {
+            padding: 6rem 5%;
+            background: var(--darker);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: transform 0.3s, background 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(114, 137, 218, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+        }
+
+        /* Commands Section */
+        .commands {
+            padding: 6rem 5%;
+            background: var(--dark);
+        }
+
+        .commands-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: var(--gradient);
+            border-color: transparent;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .command-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .command-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(114, 137, 218, 0.2);
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .command-name {
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .command-category {
+            background: rgba(114, 137, 218, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .command-description {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .command-usage {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #7289DA;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            padding: 6rem 5%;
+            background: var(--darker);
+            text-align: center;
+        }
+
+        .preview-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, rgba(114, 137, 218, 0.1), rgba(255, 115, 179, 0.1));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 5%;
+            background: var(--darker);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .social-links a:hover {
+            background: var(--gradient);
+            transform: translateY(-3px);
+            border-color: transparent;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .bot-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .commands-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+    </style>
 </head>
 <body>
     <!-- Particles Background -->
     <div id="particles-js"></div>
 
-    <!-- Navigation -->
+    <!-- ========================================== -->
+    <!-- NAVIGATION - CUSTOMIZE LINKS HERE -->
+    <!-- ========================================== -->
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-robot"></i>
@@ -24,14 +483,26 @@
             <a href="#dashboard">Dashboard</a>
             <a href="#documentation">Docs</a>
         </div>
-        <a href="#invite" class="cta-button">Add to Discord</a>
+        <!-- CHANGE BOT INVITE LINK HERE -->
+        <a href="https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=8&scope=bot%20applications.commands" 
+           target="_blank" 
+           class="cta-button">
+            Add to Discord
+        </a>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- ========================================== -->
+    <!-- HERO SECTION - CUSTOMIZE TEXT HERE -->
+    <!-- ========================================== -->
     <section class="hero">
         <h1 class="floating">Riri Discord Bot</h1>
         <p>Advanced multipurpose Discord bot featuring music, moderation, leveling, economy, and much more. Everything you need to manage and enhance your Discord server.</p>
-        <a href="#invite" class="cta-button" style="padding: 1rem 3rem; font-size: 1.2rem;">
+        
+        <!-- CHANGE BOT INVITE LINK HERE TOO -->
+        <a href="https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=8&scope=bot%20applications.commands" 
+           target="_blank" 
+           class="cta-button" 
+           style="padding: 1rem 3rem; font-size: 1.2rem;">
             <i class="fas fa-plus"></i> Invite Riri
         </a>
         
@@ -55,10 +526,13 @@
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- ========================================== -->
+    <!-- FEATURES - CUSTOMIZE YOUR BOT'S FEATURES -->
+    <!-- ========================================== -->
     <section class="features" id="features">
         <h2 class="section-title">Powerful Features</h2>
         <div class="features-grid">
+            <!-- FEATURE 1 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-music"></i>
@@ -67,6 +541,7 @@
                 <p>High-quality music playback with playlist support, lyrics, and crossfade. Supports YouTube, Spotify, SoundCloud and more.</p>
             </div>
             
+            <!-- FEATURE 2 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-chart-line"></i>
@@ -75,6 +550,7 @@
                 <p>Complete leveling system with rank cards, leaderboards, titles, and virtual economy with shops and trading.</p>
             </div>
             
+            <!-- FEATURE 3 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-shield-alt"></i>
@@ -83,6 +559,7 @@
                 <p>Advanced moderation tools including auto-mod, offense tracking, warning system, and comprehensive logging.</p>
             </div>
             
+            <!-- FEATURE 4 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-users"></i>
@@ -91,6 +568,7 @@
                 <p>Customizable welcome and leave messages with embedded images, roles assignment, and member verification.</p>
             </div>
             
+            <!-- FEATURE 5 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-robot"></i>
@@ -99,6 +577,7 @@
                 <p>Intelligent chat responses, context-aware conversations, and custom AI personalities for your server.</p>
             </div>
             
+            <!-- FEATURE 6 -->
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-cogs"></i>
@@ -109,7 +588,9 @@
         </div>
     </section>
 
-    <!-- Commands Section -->
+    <!-- ========================================== -->
+    <!-- COMMANDS - ADD YOUR BOT'S COMMANDS HERE -->
+    <!-- ========================================== -->
     <section class="commands" id="commands">
         <h2 class="section-title">Command Categories</h2>
         <div class="commands-filter">
@@ -118,10 +599,11 @@
             <button class="filter-btn" data-filter="moderation">Moderation</button>
             <button class="filter-btn" data-filter="leveling">Leveling</button>
             <button class="filter-btn" data-filter="utility">Utility</button>
+            <button class="filter-btn" data-filter="fun">Fun</button>
         </div>
         
         <div class="commands-grid">
-            <!-- Music Commands -->
+            <!-- ================= MUSIC COMMANDS ================= -->
             <div class="command-card" data-category="music">
                 <div class="command-header">
                     <span class="command-name">/play</span>
@@ -140,7 +622,16 @@
                 <div class="command-usage">/queue [page]</div>
             </div>
             
-            <!-- Moderation Commands -->
+            <div class="command-card" data-category="music">
+                <div class="command-header">
+                    <span class="command-name">/skip</span>
+                    <span class="command-category">Music</span>
+                </div>
+                <p class="command-description">Skip the currently playing song</p>
+                <div class="command-usage">/skip</div>
+            </div>
+            
+            <!-- ================= MODERATION COMMANDS ================= -->
             <div class="command-card" data-category="moderation">
                 <div class="command-header">
                     <span class="command-name">/warn</span>
@@ -159,7 +650,16 @@
                 <div class="command-usage">/clear &lt;amount&gt;</div>
             </div>
             
-            <!-- Leveling Commands -->
+            <div class="command-card" data-category="moderation">
+                <div class="command-header">
+                    <span class="command-name">/ban</span>
+                    <span class="command-category">Moderation</span>
+                </div>
+                <p class="command-description">Ban a user from the server</p>
+                <div class="command-usage">/ban @user [reason]</div>
+            </div>
+            
+            <!-- ================= LEVELING COMMANDS ================= -->
             <div class="command-card" data-category="leveling">
                 <div class="command-header">
                     <span class="command-name">/rank</span>
@@ -178,7 +678,16 @@
                 <div class="command-usage">/leaderboard [page]</div>
             </div>
             
-            <!-- Utility Commands -->
+            <div class="command-card" data-category="leveling">
+                <div class="command-header">
+                    <span class="command-name">/bg</span>
+                    <span class="command-category">Leveling</span>
+                </div>
+                <p class="command-description">Change your rank card background</p>
+                <div class="command-usage">/bg &lt;background name&gt;</div>
+            </div>
+            
+            <!-- ================= UTILITY COMMANDS ================= -->
             <div class="command-card" data-category="utility">
                 <div class="command-header">
                     <span class="command-name">/serverinfo</span>
@@ -196,53 +705,116 @@
                 <p class="command-description">Get help with Riri's commands</p>
                 <div class="command-usage">/help [command]</div>
             </div>
+            
+            <div class="command-card" data-category="utility">
+                <div class="command-header">
+                    <span class="command-name">/userinfo</span>
+                    <span class="command-category">Utility</span>
+                </div>
+                <p class="command-description">Get information about a user</p>
+                <div class="command-usage">/userinfo [@user]</div>
+            </div>
+            
+            <!-- ================= FUN COMMANDS ================= -->
+            <div class="command-card" data-category="fun">
+                <div class="command-header">
+                    <span class="command-name">/meme</span>
+                    <span class="command-category">Fun</span>
+                </div>
+                <p class="command-description">Get a random meme</p>
+                <div class="command-usage">/meme</div>
+            </div>
+            
+            <div class="command-card" data-category="fun">
+                <div class="command-header">
+                    <span class="command-name">/8ball</span>
+                    <span class="command-category">Fun</span>
+                </div>
+                <p class="command-description">Ask the magic 8-ball a question</p>
+                <div class="command-usage">/8ball &lt;question&gt;</div>
+            </div>
+            
+            <div class="command-card" data-category="fun">
+                <div class="command-header">
+                    <span class="command-name">/cat</span>
+                    <span class="command-category">Fun</span>
+                </div>
+                <p class="command-description">Get a random cat picture</p>
+                <div class="command-usage">/cat</div>
+            </div>
         </div>
     </section>
 
-    <!-- Dashboard Preview -->
+    <!-- ========================================== -->
+    <!-- DASHBOARD PREVIEW - ADD YOUR DASHBOARD IMAGE -->
+    <!-- ========================================== -->
     <section class="dashboard-preview" id="dashboard">
         <h2 class="section-title">Web Dashboard</h2>
-        <p style="color: #99AAB5; max-width: 600px; margin: 0 auto 3rem;">Control every aspect of Riri through our intuitive web dashboard</p>
+        <p style="color: var(--text-gray); max-width: 600px; margin: 0 auto 3rem;">Control every aspect of Riri through our intuitive web dashboard (Coming Soon)</p>
         
         <div class="preview-container">
             <div class="preview-image">
                 <div style="text-align: center;">
-                    <i class="fas fa-sliders-h" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                    <i class="fas fa-sliders-h" style="font-size: 4rem; margin-bottom: 1rem; color: var(--primary);"></i>
                     <div>Interactive Dashboard Preview</div>
-                    <div style="font-size: 1rem; margin-top: 1rem;">(Live dashboard coming soon)</div>
+                    <div style="font-size: 1rem; margin-top: 1rem; color: var(--text-gray);">(Dashboard under development)</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Invite Section -->
+    <!-- ========================================== -->
+    <!-- INVITE SECTION - CUSTOMIZE LINKS HERE -->
+    <!-- ========================================== -->
     <section class="hero" id="invite" style="padding: 6rem 5%;">
         <h2>Ready to Enhance Your Server?</h2>
-        <p style="margin-bottom: 3rem;">Add Riri to your Discord server today and unlock its full potential</p>
+        <p style="margin-bottom: 3rem; color: var(--text-gray);">Add Riri to your Discord server today and unlock its full potential</p>
         <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-            <a href="#" class="cta-button" style="background: var(--gradient-accent);">
+            <!-- CHANGE BOT INVITE LINK HERE -->
+            <a href="https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=8&scope=bot%20applications.commands" 
+               target="_blank" 
+               class="cta-button" 
+               style="background: var(--gradient-accent);">
                 <i class="fab fa-discord"></i> Invite Riri
             </a>
-            <a href="#documentation" class="cta-button" style="background: rgba(255, 255, 255, 0.1);">
+            
+            <!-- CHANGE DOCUMENTATION LINK HERE -->
+            <a href="#documentation" class="cta-button" style="background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);">
                 <i class="fas fa-book"></i> Documentation
             </a>
-            <a href="https://github.com/yourusername/riri" class="cta-button" style="background: rgba(255, 255, 255, 0.1);">
+            
+            <!-- CHANGE GITHUB LINK HERE -->
+            <a href="https://github.com/YOUR_GITHUB_USERNAME/riri" 
+               target="_blank" 
+               class="cta-button" 
+               style="background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);">
                 <i class="fab fa-github"></i> GitHub
+            </a>
+            
+            <!-- CHANGE SUPPORT SERVER LINK HERE -->
+            <a href="https://discord.gg/YOUR_INVITE_CODE" 
+               target="_blank" 
+               class="cta-button" 
+               style="background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.1);">
+                <i class="fas fa-headset"></i> Support Server
             </a>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ========================================== -->
+    <!-- FOOTER - CUSTOMIZE ALL LINKS HERE -->
+    <!-- ========================================== -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Riri.txa</h3>
-                <p>Advanced Discord bot for modern communities. Feature-rich, reliable, and constantly evolving.</p>
+                <p style="color: var(--text-gray); margin-bottom: 1rem;">Advanced Discord bot for modern communities. Feature-rich, reliable, and constantly evolving.</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-discord"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <!-- CHANGE SOCIAL MEDIA LINKS HERE -->
+                    <a href="https://discord.gg/YOUR_INVITE_CODE" target="_blank"><i class="fab fa-discord"></i></a>
+                    <a href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://twitter.com/YOUR_TWITTER" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://youtube.com/YOUR_CHANNEL" target="_blank"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             
@@ -253,7 +825,7 @@
                     <li><a href="#commands">Commands</a></li>
                     <li><a href="#dashboard">Dashboard</a></li>
                     <li><a href="#documentation">Documentation</a></li>
-                    <li><a href="#support">Support Server</a></li>
+                    <li><a href="https://discord.gg/YOUR_INVITE_CODE" target="_blank">Support Server</a></li>
                 </ul>
             </div>
             
@@ -270,12 +842,129 @@
         </div>
         
         <div class="copyright">
-            <p>&copy; 2024 Riri.txa. All rights reserved. Discord is a trademark of Discord Inc.</p>
+            <p>&copy; <span id="current-year">2024</span> Riri.txa. All rights reserved. Discord is a trademark of Discord Inc.</p>
             <p style="margin-top: 0.5rem; font-size: 0.9rem;">Made with <i class="fas fa-heart" style="color: var(--accent);"></i> by the Riri Development Team</p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="js/script.js"></script>
+    <script>
+        // ==========================================
+        // JAVASCRIPT - NO CHANGES NEEDED HERE
+        // ==========================================
+        
+        // Initialize particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#7289DA" },
+                shape: { type: "circle" },
+                opacity: { value: 0.2, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#5865F2",
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.5,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        });
+
+        // Command filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const commandCards = document.querySelectorAll('.command-card');
+                
+                commandCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 10);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards and command cards
+        document.querySelectorAll('.feature-card, .command-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+
+        // Update copyright year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Console greeting
+        console.log('%c🎵 Riri Discord Bot Website 🎵', 'color: #7289DA; font-size: 18px; font-weight: bold;');
+        console.log('%cWebsite successfully loaded!', 'color: #43B581;');
+    </script>
 </body>
 </html>
